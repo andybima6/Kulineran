@@ -16,11 +16,11 @@
             <input 
             v-model="search" 
             @keyup="searchFood" 
-            type="text" 
-            class="form-control" 
+            type="text" class="form-control" 
             placeholder="Cara Makanan Kesukaan Anda..." 
             aria-label="Cara Makanan Kesukaan Anda..." 
             aria-describedby="basic-addon1" />
+            
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1"><b-icon-search></b-icon-search></span>
             </div>
@@ -31,7 +31,7 @@
       <div class="row mb-3">
         <!-- v-for adalah perulangan -->
         <!-- kenapa untuk array bernama product dikarenakan product sudah dideklrasikan di cardview berupa data props -->
-        <div class="col-md-3 mt-4" v-for="product in daftarProducts" :key="product.id">
+        <div class="col-md-3 mt-4" v-for="product in products" :key="product.id">
           <!-- Pass 'product' as the prop -->
           <CardProduct :product="product" />
         </div>
@@ -56,14 +56,14 @@ export default {
   data() {
     return {
       // Data property untuk menyimpan daftar produk
-      daftarProducts: [],
-      search: "",
+      products: [],
+      search: '',
     };
   },
   methods: {
-    // Method untuk mengatur data 'daftarProducts'
+    // Method untuk mengatur data 'products'
     setProduct(data) {
-      this.daftarProducts = data;
+      this.products = data;
     },
     // Method untuk mencari makanan
     searchFood() {
