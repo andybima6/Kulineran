@@ -17,8 +17,8 @@
             v-model="search" 
             @keyup="searchFood" 
             type="text" class="form-control" 
-            placeholder="Cara Makanan Kesukaan Anda..." 
-            aria-label="Cara Makanan Kesukaan Anda..." 
+            placeholder="Cari Makanan Kesukaan Anda..." 
+            aria-label="Cari Makanan Kesukaan Anda..." 
             aria-describedby="basic-addon1" />
             
             <div class="input-group-prepend">

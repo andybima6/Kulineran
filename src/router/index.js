@@ -3,8 +3,9 @@ import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import FoodsView from "../views/FoodsView.vue";
 import FoodsDetailView from "../views/FoodsDetailView.vue"; // Ensure correct import
+import KeranjangView from "../views/KeranjangView.vue";
 
-Vue.use(VueRouter);
+Vue.use(VueRouter); // This line enables Vue Router
 
 const routes = [
   {
@@ -18,21 +19,20 @@ const routes = [
     component: FoodsView,
   },
   {
-    // Correct dynamic route for food details
-    path: "/foods/:id",
+    path: "/foods/:id", // Dynamic route to handle food details
     name: "FoodsDetail",
     component: FoodsDetailView,
   },
   {
-    path: "/about",
-    name: "about",
-    component: () => import("../views/AboutView.vue"),
+    path: "/keranjang",
+    name: "KeranjangView",
+    component: KeranjangView,
   },
 ];
 
 const router = new VueRouter({
-  mode: "history", // Make sure this matches your setup
-  base: process.env.BASE_URL,
+  mode: "history", // Make sure this matches your setup (history mode)
+  base: process.env.BASE_URL, // Can be customized if necessaryvue ui
   routes,
 });
 
