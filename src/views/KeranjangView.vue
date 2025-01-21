@@ -1,10 +1,10 @@
 <template>
-  <div class="Keranjang">
-    <NavbarView />
+  <div class="keranjang">
+    <NavbarView :updateKeranjang="keranjangs" />
     <div class="container">
+      <!-- breadcrumb -->
       <div class="row mt-4">
         <div class="col">
-          <!-- Breadcrumb -->
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">
@@ -13,7 +13,7 @@
               <li class="breadcrumb-item">
                 <router-link to="/foods" class="text-dark">Foods</router-link>
               </li>
-              <li class="breadcrumb-item active" aria-current="page">Food Order</li>
+              <li class="breadcrumb-item active" aria-current="page">Keranjang</li>
             </ol>
           </nav>
         </div>
@@ -43,7 +43,7 @@
                 <tr v-for="(keranjang, index) in keranjangs" :key="keranjang.id">
                   <th>{{ index + 1 }}</th>
                   <td>
-                    <img :src="'/images/' + keranjang.product.gambar" alt="" class="img-fluid" />
+                    <img :src="'/images/' + keranjang.product.gambar" class="img-fluid shadow" width="250" />
                   </td>
                   <td>
                     <strong>{{ keranjang.product.nama }}</strong>
@@ -73,6 +73,24 @@
           </div>
         </div>
       </div>
+
+      <!-- Form Checkout -->
+      <div class="row justify-content-end">
+        <div class="col-md-4">
+          <form class="mt-4" v-on:submit.prevent>
+            <div class="form-group">
+              <label for="nama">Nama :</label>
+              <input type="text" class="form-control" v-model="pesan.nama" />
+            </div>
+            <div class="form-group">
+              <label for="noMeja">Nomor Meja :</label>
+              <input type="text" class="form-control" v-model="pesan.noMeja" />
+            </div>
+
+            <button type="submit" class="btn btn-success float-right" @click="checkout"><b-icon-cart></b-icon-cart>Pesan</button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -88,7 +106,8 @@ export default {
   },
   data() {
     return {
-      keranjangs: [], // Store the cart data
+      keranjangs: [],
+      pesan: {},
     };
   },
   methods: {
@@ -99,49 +118,65 @@ export default {
       axios
         .delete("http://localhost:3000/keranjangs/" + id)
         .then(() => {
-          this.$toast.success("Sukses hapus Keranjang", {
-            type: "success",
+          this.$toast.error("Sukses Hapus Keranjang", {
+            type: "error",
             position: "top-right",
             duration: 3000,
             dismissible: true,
           });
 
-          // Re-fetch keranjangs after deleting
+          // Update Data keranjang
           axios
             .get("http://localhost:3000/keranjangs")
-            .then((response) => {
-              this.setKeranjangs(response.data);
-            })
-            .catch((error) => {
-              console.error("Error fetching keranjangs:", error);
-            });
+            .then((response) => this.setKeranjangs(response.data))
+            .catch((error) => console.log(error));
         })
-        .catch((error) => {
-          console.error("Error deleting keranjang:", error);
+        .catch((error) => console.log(error));
+    },
+    checkout() {
+      if (this.pesan.nama && this.pesan.noMeja) {
+        this.pesan.keranjangs = this.keranjangs;
+        axios
+          .post("http://localhost:3000/pesanans", this.pesan)
+          .then(() => {
+            // Hapus Semua Keranjang
+            this.keranjangs.map(function (item) {
+              return axios.delete("http://localhost:3000/keranjangs/" + item.id).catch((error) => console.log(error));
+            });
+
+            this.$router.push({ path: "/PesananSukses" });
+            this.$toast.success("Sukses Dipesan", {
+              type: "success",
+              position: "top-right",
+              duration: 3000,
+              dismissible: true,
+            });
+          })
+          .catch((err) => console.log(err));
+      } else {
+        this.$toast.error("Nama dan Nomor Meja Harus diisi", {
+          type: "error",
+          position: "top-right",
+          duration: 3000,
+          dismissible: true,
         });
+      }
     },
   },
   mounted() {
     axios
       .get("http://localhost:3000/keranjangs")
-      .then((response) => {
-        console.log("Keranjang data:", response.data); // Log the response to inspect the structure
-        this.setKeranjangs(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching keranjangs:", error);
-      });
+      .then((response) => this.setKeranjangs(response.data))
+      .catch((error) => console.log(error));
   },
   computed: {
     totalHarga() {
-      return this.keranjangs.reduce((total, keranjang) => {
-        return total + keranjang.product.harga * keranjang.jumlah_pemesanan;
+      return this.keranjangs.reduce(function (items, data) {
+        return items + data.product.harga * data.jumlah_pemesanan;
       }, 0);
     },
   },
 };
 </script>
 
-<style scoped>
-/* Add custom styles if needed */
-</style>
+<style></style>

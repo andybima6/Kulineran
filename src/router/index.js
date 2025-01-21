@@ -4,6 +4,7 @@ import HomeView from "../views/HomeView.vue";
 import FoodsView from "../views/FoodsView.vue";
 import FoodsDetailView from "../views/FoodsDetailView.vue"; // Ensure correct import
 import KeranjangView from "../views/KeranjangView.vue";
+import PesananSukses from "../views/PesananSukses.vue";
 
 Vue.use(VueRouter); // This line enables Vue Router
 
@@ -27,6 +28,11 @@ const routes = [
     path: "/keranjang",
     name: "KeranjangView",
     component: KeranjangView,
+  },
+  {
+    path: "/PesananSukses",
+    name: "PesananSukses",
+    component: PesananSukses,
   },
 ];
 
